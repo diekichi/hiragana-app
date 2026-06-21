@@ -1,4 +1,4 @@
-const GROQ_API_KEY = 'YOUR_GROQ_API_KEY'; // ← ここを自分のキーに書き換える
+const GROQ_API_KEY = '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'; // ← ここを自分のキーに書き換える
 
 // 五十音データ（行ごと）
 const KANA_ROWS = [
