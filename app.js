@@ -544,6 +544,13 @@ function hideQRCode() {
   document.getElementById('qr-overlay').classList.add('hidden');
 }
 
+function copySetupUrl() {
+  const url = `https://diekichi.github.io/hiragana-app/#setup=${encodeURIComponent(GROQ_API_KEY)}`;
+  navigator.clipboard.writeText(url).then(() => {
+    alert('コピーしました！LINEやメールに貼り付けてタブレットに送ってください。');
+  });
+}
+
 // --- 起動 ---
 
 checkBrowser();
