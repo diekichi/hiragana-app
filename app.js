@@ -351,14 +351,17 @@ async function startListening() {
     return;
   }
 
+  // マイク起動待ち（タブレットは初期化に時間がかかる）
+  await new Promise(resolve => setTimeout(resolve, 500));
+
   const recorder = new MediaRecorder(stream);
   const chunks = [];
   recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
 
   recorder.start();
-  listeningMsg.textContent = '🎤 きいてるよ...（2びょう）';
+  listeningMsg.textContent = '🎤 きいてるよ...（3びょう）';
 
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  await new Promise(resolve => setTimeout(resolve, 3000));
   recorder.stop();
   stream.getTracks().forEach(t => t.stop());
 
