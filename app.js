@@ -499,9 +499,21 @@ function checkBrowser() {
 
 // --- APIキー設定 ---
 
+function checkSetupHash() {
+  const hash = window.location.hash;
+  if (hash.startsWith('#setup=')) {
+    const key = decodeURIComponent(hash.slice(7));
+    if (key.startsWith('gsk_')) {
+      GROQ_API_KEY = key;
+      localStorage.setItem('groq_api_key', key);
+      history.replaceState(null, '', window.location.pathname);
+      alert('セットアップ完了！アプリが使えます。');
+    }
+  }
+}
+
 function showKeySetup() {
-  const overlay = document.getElementById('key-overlay');
-  overlay.classList.remove('hidden');
+  document.getElementById('key-overlay').classList.remove('hidden');
 }
 
 function saveApiKey() {
@@ -515,8 +527,26 @@ function saveApiKey() {
   document.getElementById('key-overlay').classList.add('hidden');
 }
 
+function showQRCode() {
+  if (!GROQ_API_KEY) {
+    showKeySetup();
+    return;
+  }
+  const url = `https://diekichi.github.io/hiragana-app/#setup=${encodeURIComponent(GROQ_API_KEY)}`;
+  const overlay = document.getElementById('qr-overlay');
+  overlay.classList.remove('hidden');
+  const container = document.getElementById('qr-container');
+  container.innerHTML = '';
+  new QRCode(container, { text: url, width: 220, height: 220 });
+}
+
+function hideQRCode() {
+  document.getElementById('qr-overlay').classList.add('hidden');
+}
+
 // --- 起動 ---
 
 checkBrowser();
+checkSetupHash();
 renderHome();
 if (!GROQ_API_KEY) showKeySetup();

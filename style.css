@@ -389,3 +389,10 @@ body {
   border-radius: 8px;
   font-family: monospace;
 }
+
+.btn-setup {
+  background: #888;
+  color: #fff;
+  font-size: 0.95rem;
+  padding: 10px 20px;
+}
