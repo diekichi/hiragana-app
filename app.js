@@ -1,4 +1,4 @@
-const GROQ_API_KEY = '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'; // ← ここを自分のキーに書き換える
+const GROQ_API_KEY = 'YOUR_GROQ_API_KEY'; // ← ここを自分のキーに書き換える
 
 // 五十音データ（行ごと）
 const KANA_ROWS = [
@@ -166,14 +166,6 @@ let lastKana = null;
 let waitingForNext = false;
 let reviewQueue = [];
 
-function startQuiz() {
-  currentMode = 'quiz';
-  document.getElementById('mode-label').textContent = 'クイズ（ぜんぶ）';
-  document.getElementById('batch-progress').textContent = '';
-  showScreen('screen-quiz');
-  nextQuestion();
-}
-
 function startHiraganaPractice() { currentCharset = 'hiragana'; startPractice(); }
 function startHiraganaReview()   { currentCharset = 'hiragana'; startReview(); }
 function startKatakanaPractice() { currentCharset = 'katakana'; startPractice(); }
@@ -214,28 +206,22 @@ function nextQuestion() {
   hideResult();
   hideChoices();
 
-  if (currentMode === 'quiz') {
-    const quizPool = ALL_KANA.length > 1 ? ALL_KANA.filter(k => k !== lastKana) : ALL_KANA;
-    currentKana = quizPool[Math.floor(Math.random() * quizPool.length)];
-  } else if (currentMode === 'practice') {
+  if (currentMode === 'practice') {
     const batchMasteredCount = currentBatch.filter(k => getKanaData(k).mastered).length;
     if (batchMasteredCount === currentBatch.length) {
-      // バッチ全員○ → 練習モード終了
       const names = currentBatch.join('・');
       showComplete(`れんしゅう おわり！\n「${names}」\nおぼえたよ！`);
       return;
     }
-    // 全員揃うまではバッチ全文字から出題（5回クリア済みも含む・直前の文字は除く）
     const practicePool = currentBatch.length > 1 ? currentBatch.filter(k => k !== lastKana) : currentBatch;
     currentKana = practicePool[Math.floor(Math.random() * practicePool.length)];
     document.getElementById('batch-progress').textContent =
       `${batchMasteredCount} / ${currentBatch.length} ○`;
   } else if (currentMode === 'review') {
     if (reviewQueue.length === 0) {
-      // 確認モード完了 → ホームへ戻る
       const mastered = getMasteredList();
-      if (mastered.length === ALL_KANA.length) {
-        showComplete('ひらがな ぜんぶ おぼえたよ！\nすごい！');
+      if (mastered.length === getAllKana().length) {
+        showComplete('ぜんぶ おぼえたよ！\nすごい！');
       } else {
         showComplete(`かくにん おわり！\nおぼえてる もじ：${mastered.length} こ`);
       }
@@ -271,7 +257,6 @@ function renderStreakDots(streak) {
 
 // --- 音声認識 ---
 
-
 function showMicArea() {
   document.getElementById('mic-area').classList.remove('hidden');
   document.getElementById('listening-msg').classList.add('hidden');
@@ -289,7 +274,7 @@ function toHiragana(str) {
   );
 }
 
-// 音声認識が漢字・数字で返した場合の対応表（よくある誤認識）
+// 音声認識が漢字・数字で返した場合の対応表
 const KANJI_TO_KANA = {
   '目':'め','芽':'め','眼':'め','女':'め',
   '手':'て','天':'て',
@@ -298,8 +283,7 @@ const KANJI_TO_KANA = {
   '名':'な','奈':'な',
   '和':'わ','話':'わ',
   '見':'み','身':'み','美':'み','実':'み',
-  '背':'せ','瀬':'せ',
-  '世':'せ',
+  '背':'せ','瀬':'せ','世':'せ',
   '野':'の','農':'の',
   '理':'り','里':'り','利':'り',
   '留':'る','流':'る',
@@ -318,9 +302,8 @@ const KANJI_TO_KANA = {
   '代':'よ','余':'よ',
   '等':'ら',
   '心':'ん',
-  // 数字（よく誤認識される）
   '1':'い','１':'い',
-  '2':'に','２':'に',  // 「つ」も「に」も誤認識あり
+  '2':'に','２':'に',
   '3':'み','３':'み',
   '4':'し','４':'し',
   '5':'こ','５':'こ',
@@ -332,40 +315,22 @@ const KANJI_TO_KANA = {
 
 // Whisperが濁音・半濁音を清音で認識してしまうケースの対応マップ
 const HOMOPHONE_MAP = {
-  // ぢ・づは現代語でじ・ずと同音
-  'ぢ': 'じ',
-  'づ': 'ず',
-  // をはおと同音（Whisperがごなど別の字で返すこともある）
-  'を': 'お',
-  // が行
+  'ぢ': 'じ', 'づ': 'ず', 'を': 'お',
   'が': 'か', 'ぎ': 'き', 'ぐ': 'く', 'げ': 'け', 'ご': 'こ',
-  // ざ行
   'ざ': 'さ', 'じ': 'し', 'ず': 'す', 'ぜ': 'せ', 'ぞ': 'そ',
-  // だ行
   'だ': 'た', 'で': 'て', 'ど': 'と',
-  // ば行
   'ば': 'は', 'び': 'ひ', 'ぶ': 'ふ', 'べ': 'へ', 'ぼ': 'ほ',
-  // ぱ行
   'ぱ': 'は', 'ぴ': 'ひ', 'ぷ': 'ふ', 'ぺ': 'へ', 'ぽ': 'ほ',
 };
 
-// 「つ」→「２」のような特殊ケースも含め、テキスト全体を正規化
 function normalizeRecognition(text) {
   let result = toHiragana(text.trim());
-  // 漢字・数字をひらがなに変換
   result = [...result].map(ch => KANJI_TO_KANA[ch] || ch).join('');
   return result;
 }
 
-// 全候補をチェックして正解文字が含まれているか確認
-function matchesKana(event, kana) {
-  for (let i = 0; i < event.results.length; i++) {
-    for (let j = 0; j < event.results[i].length; j++) {
-      const norm = normalizeRecognition(event.results[i][j].transcript);
-      if (norm.includes(kana)) return true;
-    }
-  }
-  return false;
+function getBaseKana(kana) {
+  return HOMOPHONE_MAP[kana] || kana;
 }
 
 async function startListening() {
@@ -390,7 +355,6 @@ async function startListening() {
   const chunks = [];
   recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
 
-  // 3秒録音して自動送信
   recorder.start();
   listeningMsg.textContent = '🎤 きいてるよ...（2びょう）';
 
@@ -404,7 +368,6 @@ async function startListening() {
 
   const audioBlob = new Blob(chunks, { type: chunks[0]?.type || 'audio/webm' });
 
-  // Groq APIに送信
   const formData = new FormData();
   formData.append('file', audioBlob, 'audio.webm');
   formData.append('model', 'whisper-large-v3');
@@ -430,15 +393,14 @@ async function startListening() {
   hideMicArea();
   listeningMsg.textContent = 'きいてるよ...';
 
-  // 句読点・記号だけ、または長すぎる（ノイズ）場合は再チャレンジ
   const cleaned = transcript ? transcript.replace(/[。、！？\s]/g, '') : '';
   const isNoise = !cleaned || cleaned.length > 4;
 
-  // カタカナモードの場合、比較はひらがなに変換して行う（GroqはひらがなでReturn）
   const compareKana = currentCharset === 'katakana' ? toHiragana(currentKana) : currentKana;
-  const altKana = HOMOPHONE_MAP[compareKana];
+  const baseTarget = getBaseKana(compareKana);
+  const transcriptBase = [...cleaned].map(ch => getBaseKana(ch)).join('');
 
-  if (!isNoise && (transcript.includes(compareKana) || (altKana && transcript.includes(altKana)))) {
+  if (!isNoise && transcriptBase.includes(baseTarget)) {
     judgeAnswer(currentKana, false, transcript);
   } else if (!isNoise) {
     judgeAnswer(transcript, false, transcript);
@@ -468,9 +430,6 @@ function judgeAnswer(answer, fromChoice, heard) {
     renderStreakDots(0);
     showResult(false, currentKana, false, heard);
     speak(`ちがうよ。これは ${currentKana} だよ`);
-    if (currentMode === 'practice' && !fromChoice) {
-      // 練習モードで不正解なら同じ文字をもう一度（result閉じた後）
-    }
   }
 }
 
@@ -514,6 +473,7 @@ function showComplete(message) {
 function confirmReset() {
   if (confirm('しんちょくを ぜんぶ リセットしますか？')) {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(KATAKANA_STORAGE_KEY);
     renderHome();
   }
 }
