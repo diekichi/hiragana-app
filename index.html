@@ -65,6 +65,16 @@
     <button class="btn btn-home" onclick="goHome()">ホームへ もどる</button>
   </div>
 
+  <!-- APIキー入力オーバーレイ -->
+  <div id="key-overlay" class="key-overlay hidden">
+    <div class="key-box">
+      <p class="key-title">Groq APIキーを入力してください</p>
+      <p class="key-hint">（一度入力すればこの端末では次回から不要です）</p>
+      <input id="key-input" class="key-input" type="text" placeholder="gsk_..." />
+      <button class="btn btn-practice" onclick="saveApiKey()">保存する</button>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>

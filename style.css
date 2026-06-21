@@ -346,3 +346,46 @@ body {
 }
 
 .hidden { display: none !important; }
+
+/* APIキー入力オーバーレイ */
+.key-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.key-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px 24px;
+  max-width: 340px;
+  width: 90%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.key-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.key-hint {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.key-input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-family: monospace;
+}

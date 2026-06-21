@@ -1,4 +1,4 @@
-const GROQ_API_KEY = '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'; // ← ここを自分のキーに書き換える
+let GROQ_API_KEY = localStorage.getItem('groq_api_key') || '';
 
 // 五十音データ（行ごと）
 const KANA_ROWS = [
@@ -497,7 +497,26 @@ function checkBrowser() {
   if (isChrome) notice.style.display = 'none';
 }
 
+// --- APIキー設定 ---
+
+function showKeySetup() {
+  const overlay = document.getElementById('key-overlay');
+  overlay.classList.remove('hidden');
+}
+
+function saveApiKey() {
+  const input = document.getElementById('key-input').value.trim();
+  if (!input.startsWith('gsk_')) {
+    alert('キーは gsk_ から始まる文字列を入力してください。');
+    return;
+  }
+  GROQ_API_KEY = input;
+  localStorage.setItem('groq_api_key', input);
+  document.getElementById('key-overlay').classList.add('hidden');
+}
+
 // --- 起動 ---
 
 checkBrowser();
 renderHome();
+if (!GROQ_API_KEY) showKeySetup();
