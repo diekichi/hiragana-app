@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ひらがな れんしゅう</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -30,9 +29,6 @@
     <div class="home-buttons">
       <button class="btn btn-quiz" onclick="startKatakanaReview()">かくにんモード</button>
       <button class="btn btn-practice" onclick="startKatakanaPractice()">れんしゅうモード</button>
-    </div>
-    <div style="text-align:center; padding: 40px 0 20px;">
-      <button class="btn btn-setup" onclick="showQRCode()">📱 タブレット用セットアップ</button>
     </div>
   </div>
 
@@ -67,27 +63,6 @@
   <div id="screen-complete" class="screen">
     <div id="complete-message" class="complete-message"></div>
     <button class="btn btn-home" onclick="goHome()">ホームへ もどる</button>
-  </div>
-
-  <!-- QRコードオーバーレイ -->
-  <div id="qr-overlay" class="key-overlay hidden">
-    <div class="key-box">
-      <p class="key-title">タブレットでこのQRコードを読み取ってください</p>
-      <p class="key-hint">読み取るとアプリが自動で使えるようになります</p>
-      <div id="qr-container" style="margin: 0 auto; width: fit-content;"></div>
-      <button class="btn btn-setup" onclick="copySetupUrl()">URLをコピーしてLINE等で送る</button>
-      <button class="btn btn-quiz" onclick="hideQRCode()">閉じる</button>
-    </div>
-  </div>
-
-  <!-- APIキー入力オーバーレイ -->
-  <div id="key-overlay" class="key-overlay hidden">
-    <div class="key-box">
-      <p class="key-title">Groq APIキーを入力してください</p>
-      <p class="key-hint">（一度入力すればこの端末では次回から不要です）</p>
-      <input id="key-input" class="key-input" type="text" placeholder="gsk_..." />
-      <button class="btn btn-practice" onclick="saveApiKey()">保存する</button>
-    </div>
   </div>
 
   <script src="app.js"></script>

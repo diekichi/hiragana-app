@@ -1,4 +1,4 @@
-let GROQ_API_KEY = localStorage.getItem('groq_api_key') || '';
+const WORKER_URL = 'https://long-dew-0c82.diekichi77.workers.dev';
 
 // 五十音データ（行ごと）
 const KANA_ROWS = [
@@ -376,9 +376,8 @@ async function startListening() {
 
   let transcript = null;
   try {
-    const res = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+    const res = await fetch(WORKER_URL, {
       method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + GROQ_API_KEY },
       body: formData
     });
     if (res.ok) {
@@ -497,63 +496,7 @@ function checkBrowser() {
   if (isChrome) notice.style.display = 'none';
 }
 
-// --- APIキー設定 ---
-
-function checkSetupHash() {
-  const hash = window.location.hash;
-  if (hash.startsWith('#setup=')) {
-    const key = decodeURIComponent(hash.slice(7));
-    if (key.startsWith('gsk_')) {
-      GROQ_API_KEY = key;
-      localStorage.setItem('groq_api_key', key);
-      history.replaceState(null, '', window.location.pathname);
-      alert('セットアップ完了！アプリが使えます。');
-    }
-  }
-}
-
-function showKeySetup() {
-  document.getElementById('key-overlay').classList.remove('hidden');
-}
-
-function saveApiKey() {
-  const input = document.getElementById('key-input').value.trim();
-  if (!input.startsWith('gsk_')) {
-    alert('キーは gsk_ から始まる文字列を入力してください。');
-    return;
-  }
-  GROQ_API_KEY = input;
-  localStorage.setItem('groq_api_key', input);
-  document.getElementById('key-overlay').classList.add('hidden');
-}
-
-function showQRCode() {
-  if (!GROQ_API_KEY) {
-    showKeySetup();
-    return;
-  }
-  const url = `https://diekichi.github.io/hiragana-app/#setup=${encodeURIComponent(GROQ_API_KEY)}`;
-  const overlay = document.getElementById('qr-overlay');
-  overlay.classList.remove('hidden');
-  const container = document.getElementById('qr-container');
-  container.innerHTML = '';
-  new QRCode(container, { text: url, width: 220, height: 220 });
-}
-
-function hideQRCode() {
-  document.getElementById('qr-overlay').classList.add('hidden');
-}
-
-function copySetupUrl() {
-  const url = `https://diekichi.github.io/hiragana-app/#setup=${encodeURIComponent(GROQ_API_KEY)}`;
-  navigator.clipboard.writeText(url).then(() => {
-    alert('コピーしました！LINEやメールに貼り付けてタブレットに送ってください。');
-  });
-}
-
 // --- 起動 ---
 
 checkBrowser();
-checkSetupHash();
 renderHome();
-if (!GROQ_API_KEY) showKeySetup();
