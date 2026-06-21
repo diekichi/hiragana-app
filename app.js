@@ -382,7 +382,13 @@ async function startListening() {
 
   let stream;
   try {
-    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+      }
+    });
   } catch (e) {
     listeningMsg.textContent = '';
     showMicArea();
