@@ -1,0 +1,348 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Hiragino Kaku Gothic Pro', 'Meiryo', sans-serif;
+  background: #fff9f0;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* Chrome案内 */
+.chrome-notice {
+  background: #fff3cd;
+  color: #856404;
+  text-align: center;
+  padding: 8px;
+  font-size: 13px;
+}
+
+/* 画面切り替え */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ===== ホーム画面 ===== */
+
+.title {
+  text-align: center;
+  font-size: 2rem;
+  color: #e86a3a;
+  padding: 20px 0 8px;
+  letter-spacing: 0.1em;
+}
+
+.progress-label {
+  text-align: center;
+  font-size: 1rem;
+  color: #888;
+  margin-bottom: 16px;
+}
+
+.kana-map {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 0 6px;
+}
+
+.kana-row {
+  display: flex;
+  gap: 3px;
+}
+
+.kana-cell {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  border-radius: 4px;
+  background: #fff;
+  border: 2px solid #ddd;
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+  transition: transform 0.1s, background 0.2s;
+}
+
+.kana-cell:active { transform: scale(0.92); }
+
+.kana-cell.empty {
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+
+.kana-cell.mastered {
+  background: #e8f8e8;
+  border-color: #5cb85c;
+  color: #2a7a2a;
+}
+
+.circle-mark {
+  position: absolute;
+  top: -6px;
+  right: -4px;
+  font-size: 0.9rem;
+  color: #5cb85c;
+  line-height: 1;
+}
+
+.streak-mini {
+  font-size: 0.4rem;
+  color: #f09a3a;
+  letter-spacing: -1px;
+  position: absolute;
+  bottom: 2px;
+}
+
+/* ホームセクションラベル */
+.home-section-label {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #aaa;
+  padding: 10px 0 2px;
+  letter-spacing: 0.1em;
+}
+
+/* ホームボタン */
+.home-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding: 20px 10px 10px;
+}
+
+.btn {
+  padding: 14px 24px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: bold;
+  transition: transform 0.1s, opacity 0.2s;
+}
+
+.btn:active { transform: scale(0.95); }
+
+.btn-quiz {
+  background: #4a90d9;
+  color: #fff;
+}
+
+.btn-practice {
+  background: #e86a3a;
+  color: #fff;
+}
+
+.btn-reset {
+  display: block;
+  margin: 4px auto 20px;
+  background: #eee;
+  color: #888;
+  font-size: 0.85rem;
+  padding: 8px 18px;
+}
+
+/* ===== クイズ・練習画面 ===== */
+
+.quiz-header {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  gap: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.btn-back {
+  background: none;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.mode-label {
+  font-size: 1rem;
+  color: #666;
+  font-weight: bold;
+}
+
+.batch-progress {
+  margin-left: auto;
+  font-size: 0.95rem;
+  color: #5cb85c;
+  font-weight: bold;
+}
+
+/* 文字表示 */
+.kana-display {
+  text-align: center;
+  font-size: 9rem;
+  line-height: 1.1;
+  padding: 30px 0 10px;
+  color: #222;
+  font-weight: bold;
+}
+
+/* 連続正解ドット */
+.streak-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding-bottom: 20px;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ddd;
+  transition: background 0.3s;
+}
+
+.dot.filled { background: #f09a3a; }
+
+/* マイクエリア */
+.mic-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.mic-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: #e86a3a;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: bold;
+  transition: transform 0.1s, background 0.2s;
+  box-shadow: 0 4px 12px rgba(232,106,58,0.4);
+}
+
+.mic-btn:active { transform: scale(0.92); }
+.mic-btn:disabled { background: #ccc; box-shadow: none; cursor: default; }
+
+.mic-icon { font-size: 2.4rem; }
+.mic-text { font-size: 0.8rem; }
+
+.listening-msg {
+  font-size: 1rem;
+  color: #e86a3a;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* 選択肢 */
+.choices-area {
+  padding: 10px 16px;
+  text-align: center;
+}
+
+.choices-hint {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.choice-btn {
+  display: inline-block;
+  margin: 6px;
+  width: 64px;
+  height: 64px;
+  font-size: 2rem;
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.1s, background 0.2s;
+}
+
+.choice-btn:active { transform: scale(0.9); }
+.choice-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* 結果エリア */
+.result-area {
+  margin: 16px;
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.result-area.correct { background: #e8f8e8; border: 2px solid #5cb85c; }
+.result-area.wrong   { background: #fde8e8; border: 2px solid #e05555; }
+
+.result-text {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.result-kana {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.btn-next {
+  background: #4a90d9;
+  color: #fff;
+  font-size: 1.1rem;
+  padding: 12px 28px;
+}
+
+/* 完了画面 */
+#screen-complete {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  text-align: center;
+  padding: 20px;
+}
+
+#screen-complete.active {
+  display: flex;
+}
+
+.complete-message {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #e86a3a;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.btn-home {
+  background: #4a90d9;
+  color: #fff;
+  font-size: 1.1rem;
+  padding: 14px 28px;
+}
+
+.hidden { display: none !important; }
