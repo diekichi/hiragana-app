@@ -65,8 +65,8 @@ function updateKana(kana, correct) {
       d.mastered = true;
     }
   } else {
-    d.streak = 0;
-    d.mastered = false;
+    d.streak = Math.max(0, (d.streak || 0) - 1);
+    if (d.streak < STREAK_TO_MASTER) d.mastered = false;
   }
   saveProgress(progress);
 }
