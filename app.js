@@ -407,12 +407,14 @@ async function startListening() {
   listeningMsg.textContent = '🎤 きいてるよ...（2びょう）';
 
   await new Promise(resolve => setTimeout(resolve, 2000));
+
+  const stopped = new Promise(resolve => { recorder.onstop = resolve; });
   recorder.stop();
   stream.getTracks().forEach(t => t.stop());
 
   listeningMsg.textContent = 'んー...';
 
-  await new Promise(resolve => { recorder.onstop = resolve; });
+  await stopped;
 
   const audioBlob = new Blob(chunks, { type: chunks[0]?.type || 'audio/webm' });
 
@@ -421,24 +423,36 @@ async function startListening() {
   formData.append('model', 'whisper-large-v3');
   formData.append('language', 'ja');
   formData.append('response_format', 'text');
+  formData.append('temperature', '0');
+  // ひらがな一文字に寄せるためのヒント（漢字・英語での誤認識を減らす）
+  formData.append('prompt', 'ひらがなを１文字いいます。あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん');
 
   let transcript = null;
   try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
     const res = await fetch(WORKER_URL, {
       method: 'POST',
-      body: formData
+      body: formData,
+      signal: controller.signal
     });
+    clearTimeout(timer);
     if (res.ok) {
       const text = (await res.text()).trim();
       transcript = normalizeRecognition(text);
       listeningMsg.textContent = '「' + transcript + '」';
     }
   } catch (e) {
-    // ネットワークエラー時は再チャレンジ
+    // ネットワークエラー・タイムアウト時は再チャレンジ
   }
 
   hideMicArea();
   listeningMsg.textContent = 'きいてるよ...';
+
+  // 録音中にホームへ戻った等、クイズ画面を離れていたら判定しない
+  if (!document.getElementById('screen-quiz').classList.contains('active')) {
+    return;
+  }
 
   const cleaned = transcript ? transcript.replace(/[。、！？\s.,!?ー・]/g, '') : '';
   const isNoise = !cleaned || cleaned.length > 6;
@@ -474,7 +488,8 @@ function judgeAnswer(answer, fromChoice, heard) {
     showResult(true, currentKana, d.mastered, heard);
     speak(`せいかい！これは ${currentKana} だよ`);
   } else {
-    renderStreakDots(0);
+    const d = getKanaData(currentKana);
+    renderStreakDots(d.streak);
     showResult(false, currentKana, false, heard);
     speak(`ちがうよ。これは ${currentKana} だよ`);
   }
