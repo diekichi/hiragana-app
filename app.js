@@ -142,6 +142,7 @@ function renderKanaMap(container, rows, progress) {
 
 function speakKana(text) {
   window.speechSynthesis.cancel();
+  window.speechSynthesis.resume();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'ja-JP';
   utterance.rate = 0.8;
@@ -150,6 +151,7 @@ function speakKana(text) {
 
 function speak(text, onEnd) {
   window.speechSynthesis.cancel();
+  window.speechSynthesis.resume();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'ja-JP';
   utterance.rate = 0.85;
