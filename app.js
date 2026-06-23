@@ -374,7 +374,9 @@ function getBaseKana(kana) {
 }
 
 async function startListening() {
+  // iOSはawait後のspeak()をブロックするため、ジェスチャー内で事前アンロック
   window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(new SpeechSynthesisUtterance(''));
 
   const micBtn = document.getElementById('mic-btn');
   const listeningMsg = document.getElementById('listening-msg');
@@ -546,3 +548,9 @@ function checkBrowser() {
 
 checkBrowser();
 renderHome();
+
+// iOS Safari/Chrome: 最初のタップでspeech synthesisをアンロック
+document.addEventListener('touchstart', function() {
+  const u = new SpeechSynthesisUtterance('');
+  window.speechSynthesis.speak(u);
+}, { once: true, passive: true });
