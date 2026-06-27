@@ -165,13 +165,14 @@ function submitAnswer() {
   if (correct) {
     streak++;
     renderStreak();
-    showMathResult(true);
     if (streak >= CLEAR_STREAK) {
+      // クリア時は「つぎへ」を出さず、そのままクリア画面へ
       const wasCleared = isLevelCleared(currentLevel.id);
       markLevelCleared(currentLevel.id);
       mathSpeak(`せいかい！レベル ${currentLevel.id} クリア！`);
-      setTimeout(() => showLevelComplete(wasCleared), 1200);
+      setTimeout(() => showLevelComplete(wasCleared), 1500);
     } else {
+      showMathResult(true);
       mathSpeak(`せいかい！こたえは ${currentAnswer}`);
     }
   } else {
