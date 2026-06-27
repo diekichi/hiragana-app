@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>たしざん れんしゅう</title>
+  <link rel="stylesheet" href="style.css?v=20260627">
+</head>
+<body>
+
+  <!-- レベル選択画面 -->
+  <div id="screen-level" class="screen active">
+    <h1 class="title">たしざん れんしゅう</h1>
+    <p class="progress-label">れんぞくで 5もん せいかいすると クリア！</p>
+    <div id="level-list" class="level-list"></div>
+    <div style="text-align:center; padding: 30px 0;">
+      <a href="index.html" class="btn btn-home" style="text-decoration:none;">&#8592; もどる</a>
+    </div>
+  </div>
+
+  <!-- 出題画面 -->
+  <div id="screen-math" class="screen">
+    <div class="quiz-header">
+      <button class="btn-back" onclick="goMathHome()">&#8592; もどる</button>
+      <div id="math-level-label" class="mode-label"></div>
+    </div>
+
+    <div id="problem-text" class="problem-text"></div>
+    <div id="answer-box" class="answer-box">?</div>
+    <div id="math-streak" class="streak-dots"></div>
+
+    <div id="keypad" class="keypad">
+      <button class="key" onclick="pressKey(7)">7</button>
+      <button class="key" onclick="pressKey(8)">8</button>
+      <button class="key" onclick="pressKey(9)">9</button>
+      <button class="key" onclick="pressKey(4)">4</button>
+      <button class="key" onclick="pressKey(5)">5</button>
+      <button class="key" onclick="pressKey(6)">6</button>
+      <button class="key" onclick="pressKey(1)">1</button>
+      <button class="key" onclick="pressKey(2)">2</button>
+      <button class="key" onclick="pressKey(3)">3</button>
+      <button class="key key-clear" onclick="clearKey()">けす</button>
+      <button class="key" onclick="pressKey(0)">0</button>
+      <button class="key key-enter" onclick="submitAnswer()">こたえる</button>
+    </div>
+
+    <div id="math-result" class="result-area hidden">
+      <div id="math-result-text" class="result-text"></div>
+      <button class="btn btn-next" onclick="nextProblem()">つぎへ &#8594;</button>
+    </div>
+  </div>
+
+  <!-- レベルクリア画面 -->
+  <div id="screen-math-complete" class="screen">
+    <div id="math-complete-message" class="complete-message"></div>
+    <button class="btn btn-home" onclick="goMathHome()">レベルえらびに もどる</button>
+  </div>
+
+  <script src="math.js?v=20260627"></script>
+</body>
+</html>
